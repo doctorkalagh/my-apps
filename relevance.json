@@ -1,0 +1,26 @@
+{
+  "version": 1,
+  "owner": "doctorkalagh",
+  "createdAt": "2026-11-26T09:28:33.835Z",
+  "settings": {
+    "notifications": {
+      "email": true,
+      "issue": true,
+      "inApp": true,
+      "fdroid": true
+    },
+    "store": {
+      "title": "doctorkalagh's apps",
+      "description": "A small, honest collection of apps — kept up to date automatically."
+    },
+    "relevanceUrl": "https://relevance.cocoparrot-backend.workers.dev",
+    "signing": {
+      "mode": "generated",
+      "fingerprint": "C402F9D3200500C6B8FA127CAF6011D46AC7AAB8762FFCA815F6636051ABF596",
+      "alias": "relevance",
+      "createdAt": "2026-11-26T09:28:33.835Z"
+    }
+  },
+  "patchSources": [],
+  "apps": []
+}
