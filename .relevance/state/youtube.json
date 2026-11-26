@@ -1,14 +1,37 @@
 {
   "appId": "youtube",
-  "status": "building",
-  "releases": [],
+  "status": "ok",
+  "releases": [
+    {
+      "version": "20.26.46",
+      "versionCode": 1555445184,
+      "tag": "youtube-20.26.46-178bb4",
+      "date": "2026-11-26T09:47:28.159Z",
+      "size": 169942054,
+      "sha256": "c64fb8f0ac90a305871987b2a54c484f1ae0f51a62af510954052fe4e8c34a02",
+      "apk": "com.google.android.youtube_1555445184_178bb4.apk",
+      "url": "https://github.com/doctorkalagh/my-apps/releases/download/youtube-20.26.46-178bb4/com.google.android.youtube_1555445184_178bb4.apk",
+      "patches": [
+        "Hide ads",
+        "Video ads",
+        "Copy video URL",
+        "Remove viewer discretion dialog",
+        "Add more double tap to seek length options",
+        "Downloads"
+      ],
+      "tool": "revanced",
+      "patchVersion": "v6.2.1",
+      "sourceVersion": "20.26.46"
+    }
+  ],
   "history": [
     {
       "runId": 45794855613,
       "version": "20.26.46",
-      "status": "running",
+      "status": "success",
       "at": "2026-11-26T09:45:11.224Z",
-      "trigger": "manual"
+      "trigger": "manual",
+      "durationMs": 137063
     }
   ],
   "targetVersion": "20.26.46",
@@ -20,5 +43,29 @@
     ],
     "firstSeen": "2026-11-26T09:45:38.235Z",
     "version": "20.26.46"
-  }
+  },
+  "current": {
+    "version": "20.26.46",
+    "versionCode": 1555445184,
+    "tag": "youtube-20.26.46-178bb4",
+    "date": "2026-11-26T09:47:28.159Z",
+    "size": 169942054,
+    "sha256": "c64fb8f0ac90a305871987b2a54c484f1ae0f51a62af510954052fe4e8c34a02",
+    "apk": "com.google.android.youtube_1555445184_178bb4.apk",
+    "url": "https://github.com/doctorkalagh/my-apps/releases/download/youtube-20.26.46-178bb4/com.google.android.youtube_1555445184_178bb4.apk",
+    "patches": [
+      "Hide ads",
+      "Video ads",
+      "Copy video URL",
+      "Remove viewer discretion dialog",
+      "Add more double tap to seek length options",
+      "Downloads"
+    ],
+    "tool": "revanced",
+    "patchVersion": "v6.2.1",
+    "sourceVersion": "20.26.46"
+  },
+  "configHash": "178bb4f8df2ff5de",
+  "patchVersion": "v6.2.1",
+  "attention": null
 }
