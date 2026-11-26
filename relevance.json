@@ -4,7 +4,7 @@
   "createdAt": "2026-11-26T09:28:33.835Z",
   "settings": {
     "notifications": {
-      "email": true,
+      "email": false,
       "issue": true,
       "inApp": true,
       "fdroid": true
