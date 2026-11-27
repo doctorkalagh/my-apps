@@ -67,5 +67,7 @@
   },
   "configHash": "178bb4f8df2ff5de",
   "patchVersion": "v6.2.1",
-  "attention": null
+  "attention": null,
+  "checkedAt": "2026-11-27T14:26:39.995Z",
+  "latestAvailable": "21.47.483-SECONDARY"
 }
