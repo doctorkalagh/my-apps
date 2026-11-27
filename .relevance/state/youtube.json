@@ -1,0 +1,15 @@
+{
+  "appId": "youtube",
+  "status": "building",
+  "releases": [],
+  "history": [
+    {
+      "runId": 46084960719,
+      "version": "21.23.492",
+      "status": "running",
+      "at": "2026-11-27T23:53:53.651Z",
+      "trigger": "manual"
+    }
+  ],
+  "targetVersion": "21.23.492"
+}
