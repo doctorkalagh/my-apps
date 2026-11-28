@@ -47,6 +47,423 @@
       "enabled": true,
       "createdAt": "2026-11-27T23:53:27.219Z",
       "updatedAt": "2026-11-27T23:53:27.219Z"
+    },
+    {
+      "id": "youtube",
+      "name": "YouTube",
+      "packageName": "com.google.android.youtube",
+      "source": {
+        "type": "apkpure",
+        "url": "https://apkpure.com/app/com.google.android.youtube"
+      },
+      "tool": "morphe",
+      "patches": [
+        {
+          "name": "AI channel filter"
+        },
+        {
+          "name": "Add to queue"
+        },
+        {
+          "name": "Ambient mode"
+        },
+        {
+          "name": "Android Auto parked app mode"
+        },
+        {
+          "name": "App refresh rate"
+        },
+        {
+          "name": "Ask flyout menu"
+        },
+        {
+          "name": "Autoplay control"
+        },
+        {
+          "name": "Bypass image region restrictions"
+        },
+        {
+          "name": "Bypass link redirects"
+        },
+        {
+          "name": "Captions"
+        },
+        {
+          "name": "Change form factor"
+        },
+        {
+          "name": "Change header"
+        },
+        {
+          "name": "Change picture-in-picture actions"
+        },
+        {
+          "name": "Change start page"
+        },
+        {
+          "name": "Channel search"
+        },
+        {
+          "name": "Channel whitelist"
+        },
+        {
+          "name": "Check watch history domain name resolution"
+        },
+        {
+          "name": "Comment search"
+        },
+        {
+          "name": "Copy text"
+        },
+        {
+          "name": "Copy video link"
+        },
+        {
+          "name": "Custom font"
+        },
+        {
+          "name": "Custom player overlay opacity"
+        },
+        {
+          "name": "DeArrow"
+        },
+        {
+          "name": "Disable DRC audio"
+        },
+        {
+          "name": "Disable QUIC protocol"
+        },
+        {
+          "name": "Disable Shorts resuming on startup"
+        },
+        {
+          "name": "Disable auto feed refresh"
+        },
+        {
+          "name": "Disable continue watching prompt"
+        },
+        {
+          "name": "Disable double tap actions"
+        },
+        {
+          "name": "Disable fullscreen gestures"
+        },
+        {
+          "name": "Disable haptic feedback"
+        },
+        {
+          "name": "Disable layout updates"
+        },
+        {
+          "name": "Disable player popup panels"
+        },
+        {
+          "name": "Disable playlist autoplay"
+        },
+        {
+          "name": "Disable rolling number animations"
+        },
+        {
+          "name": "Disable scrolling speed limit"
+        },
+        {
+          "name": "Disable sign in to TV popup"
+        },
+        {
+          "name": "Disable video codecs"
+        },
+        {
+          "name": "Double tap to seek"
+        },
+        {
+          "name": "Download post images"
+        },
+        {
+          "name": "Downloads"
+        },
+        {
+          "name": "Enable debugging"
+        },
+        {
+          "name": "Exit fullscreen mode"
+        },
+        {
+          "name": "Feed card layout"
+        },
+        {
+          "name": "Feed video actions"
+        },
+        {
+          "name": "Feed view count"
+        },
+        {
+          "name": "Force animations"
+        },
+        {
+          "name": "Force fullscreen landscape"
+        },
+        {
+          "name": "Force original audio"
+        },
+        {
+          "name": "Fullscreen playlist panel"
+        },
+        {
+          "name": "Fullscreen video scale"
+        },
+        {
+          "name": "Ghost mode"
+        },
+        {
+          "name": "Glass menus"
+        },
+        {
+          "name": "GmsCore support"
+        },
+        {
+          "name": "Hide Shorts components"
+        },
+        {
+          "name": "Hide ads"
+        },
+        {
+          "name": "Hide autoplay preview"
+        },
+        {
+          "name": "Hide end screen cards"
+        },
+        {
+          "name": "Hide end screen suggested video"
+        },
+        {
+          "name": "Hide info cards"
+        },
+        {
+          "name": "Hide layout components"
+        },
+        {
+          "name": "Hide player flyout menu components"
+        },
+        {
+          "name": "Hide player overlay buttons"
+        },
+        {
+          "name": "Hide related video overlay"
+        },
+        {
+          "name": "Hide related videos"
+        },
+        {
+          "name": "Hide status bar"
+        },
+        {
+          "name": "Hide timestamp"
+        },
+        {
+          "name": "Hide video action buttons"
+        },
+        {
+          "name": "Hold gesture"
+        },
+        {
+          "name": "Loop count"
+        },
+        {
+          "name": "Loop video"
+        },
+        {
+          "name": "Media notification controls"
+        },
+        {
+          "name": "Miniplayer"
+        },
+        {
+          "name": "Mute button"
+        },
+        {
+          "name": "Navigation bar"
+        },
+        {
+          "name": "Niconico comments"
+        },
+        {
+          "name": "On-the-go player"
+        },
+        {
+          "name": "Open Shorts in regular player"
+        },
+        {
+          "name": "Open channel of live avatar"
+        },
+        {
+          "name": "Open links externally"
+        },
+        {
+          "name": "Open post images in fullscreen"
+        },
+        {
+          "name": "Open system share sheet"
+        },
+        {
+          "name": "Open videos fullscreen"
+        },
+        {
+          "name": "Override YouTube Music buttons"
+        },
+        {
+          "name": "Picture-in-picture button"
+        },
+        {
+          "name": "Play all"
+        },
+        {
+          "name": "Playback buffer"
+        },
+        {
+          "name": "Playback in feeds"
+        },
+        {
+          "name": "Playback speed"
+        },
+        {
+          "name": "Player icon style"
+        },
+        {
+          "name": "Playlist button"
+        },
+        {
+          "name": "Playlist improvements"
+        },
+        {
+          "name": "Playlist search"
+        },
+        {
+          "name": "PoToken provider"
+        },
+        {
+          "name": "Reload video"
+        },
+        {
+          "name": "Remember live stream playback position"
+        },
+        {
+          "name": "Remove background playback restrictions"
+        },
+        {
+          "name": "Remove viewer discretion dialog"
+        },
+        {
+          "name": "Replay slower button"
+        },
+        {
+          "name": "Restore original titles"
+        },
+        {
+          "name": "Return YouTube Dislike"
+        },
+        {
+          "name": "Return YouTube Username"
+        },
+        {
+          "name": "Reverse playlist autoplay"
+        },
+        {
+          "name": "Sanitize sharing links"
+        },
+        {
+          "name": "Save to Watch later"
+        },
+        {
+          "name": "Seekbar"
+        },
+        {
+          "name": "Series tracking"
+        },
+        {
+          "name": "Settings menu filter"
+        },
+        {
+          "name": "Shorts autoplay"
+        },
+        {
+          "name": "Shorts icon style"
+        },
+        {
+          "name": "Skip live Shorts"
+        },
+        {
+          "name": "Skip silence"
+        },
+        {
+          "name": "Snackbar"
+        },
+        {
+          "name": "SponsorBlock"
+        },
+        {
+          "name": "Spoof app version"
+        },
+        {
+          "name": "Spoof device dimensions"
+        },
+        {
+          "name": "Spoof video streams"
+        },
+        {
+          "name": "Swipe controls"
+        },
+        {
+          "name": "Theme"
+        },
+        {
+          "name": "Translate live chat"
+        },
+        {
+          "name": "Translate posts"
+        },
+        {
+          "name": "Ungroup notifications"
+        },
+        {
+          "name": "Video delay"
+        },
+        {
+          "name": "Video effects"
+        },
+        {
+          "name": "Video quality"
+        },
+        {
+          "name": "Voice over translation"
+        },
+        {
+          "name": "Wide search bar"
+        }
+      ],
+      "customPatches": [],
+      "pin": null,
+      "customize": {},
+      "listing": {
+        "summary": "Developed by Google LLC, it stands out for personalized recommendations across…",
+        "description": "<p>Developed by Google LLC, it stands out for personalized recommendations across many interests. On Android, download YouTube to follow channels, explore trends, and join creator communities. Here are the core highlights that matter in everyday use. Personalized Home, Subscriptions, and Library help f</p>",
+        "category": "System",
+        "website": "https://apkpure.net/app/com.google.android.youtube",
+        "screenshots": [
+          "https://image.winudf.com/v2/image1/Y29tLmdvb2dsZS5hbmRyb2lkLnlvdXR1YmVfc2NyZWVuXzBfMTc5Mzc1MTg0Nl8wMTY/screen-0.jpg?h=1280&fakeurl=1&type=.jpg",
+          "https://image.winudf.com/v2/image1/Y29tLmdvb2dsZS5hbmRyb2lkLnlvdXR1YmVfc2NyZWVuXzFfMTc5Mzc1MTg0N18wMDY/screen-1.jpg?h=1280&fakeurl=1&type=.jpg",
+          "https://image.winudf.com/v2/image1/Y29tLmdvb2dsZS5hbmRyb2lkLnlvdXR1YmVfc2NyZWVuXzJfMTc5Mzc1MTg0OV8wMzM/screen-2.jpg?h=1280&fakeurl=1&type=.jpg",
+          "https://image.winudf.com/v2/image1/Y29tLmdvb2dsZS5hbmRyb2lkLnlvdXR1YmVfc2NyZWVuXzNfMTc5Mzc1MTg1MF8wODM/screen-3.jpg?h=1280&fakeurl=1&type=.jpg",
+          "https://image.winudf.com/v2/image1/Y29tLmdvb2dsZS5hbmRyb2lkLnlvdXR1YmVfc2NyZWVuXzRfMTc5Mzc1MTg1MV8wNzc/screen-4.jpg?h=1280&fakeurl=1&type=.jpg",
+          "https://image.winudf.com/v2/image1/Y29tLmdvb2dsZS5hbmRyb2lkLnlvdXR1YmVfc2NyZWVuXzVfMTc5Mzc1MTg1MV8wMTk/screen-5.jpg?h=1280&fakeurl=1&type=.jpg",
+          "https://image.winudf.com/v2/image1/Y29tLmdvb2dsZS5hbmRyb2lkLnlvdXR1YmVfc2NyZWVuXzZfMTc5Mzc1MTg1MV8wMDE/screen-6.jpg?h=1280&fakeurl=1&type=.jpg",
+          "https://image.winudf.com/v2/image1/Y29tLmdvb2dsZS5hbmRyb2lkLnlvdXR1YmVfc2NyZWVuXzdfMTc5Mzc1MTg1Ml8wMDE/screen-7.jpg?h=1280&fakeurl=1&type=.jpg"
+        ]
+      },
+      "enabled": true,
+      "createdAt": "2026-11-28T00:40:53.011Z",
+      "updatedAt": "2026-11-28T00:41:59.697Z",
+      "iconUrl": "https://image.winudf.com/v2/image1/Y29tLmdvb2dsZS5hbmRyb2lkLnlvdXR1YmVfaWNvbl8xNzgwNDE4NDgzXzA0OA/icon.png?w=512&fakeurl=1",
+      "patchSourceId": "morphe"
     }
   ]
 }
