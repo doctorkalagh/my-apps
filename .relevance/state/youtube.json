@@ -309,5 +309,7 @@
   },
   "configHash": "019af8ed481f94bf",
   "patchVersion": "2.4.0",
-  "attention": null
+  "attention": null,
+  "checkedAt": "2026-11-28T13:41:32.397Z",
+  "latestAvailable": "21.47.483-SECONDARY"
 }
