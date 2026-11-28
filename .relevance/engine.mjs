@@ -1,10 +1,11 @@
 // shared/types.ts
-var ENGINE_VERSION = "1.3.1";
+var ENGINE_VERSION = "1.3.3";
 
 // engine/build.ts
 import { copyFileSync, existsSync as existsSync4, mkdirSync as mkdirSync3, readdirSync as readdirSync2, readFileSync as readFileSync3, renameSync, rmSync, statSync, writeFileSync as writeFileSync2 } from "node:fs";
 import { createHash as createHash2 } from "node:crypto";
-import { join as join2 } from "node:path";
+import { deflateSync } from "node:zlib";
+import { join as join2, resolve } from "node:path";
 
 // shared/logic.ts
 function compareVersions(a, b) {
@@ -485,7 +486,7 @@ function run(cmd, args, opts = {}) {
         for (let l of out.split(`
 `).slice(-30))
           log(l);
-      code === 0 ? resolve(out) : reject(Error(`${cmd} exited with code ${code}`));
+      code === 0 ? resolve(out) : reject(Object.assign(Error(`${cmd} exited with code ${code}`), { output: out }));
     });
   });
 }
@@ -1138,6 +1139,87 @@ function optionArg(v) {
     return v.replace(/(["'])/g, "\\$1");
   return String(v);
 }
+function solidPng(size, hex) {
+  let m = /^#?([0-9a-f]{6})$/i.exec(hex.trim()) || [, "ffffff"], [r, g, b] = [0, 2, 4].map((i) => parseInt(m[1].slice(i, i + 2), 16)), row = Buffer.alloc(1 + size * 3);
+  for (let x = 0;x < size; x++)
+    row.set([r, g, b], 1 + x * 3);
+  let raw = Buffer.concat(Array.from({ length: size }, () => row)), crcTable = Array.from({ length: 256 }, (_, n) => {
+    let c = n;
+    for (let k = 0;k < 8; k++)
+      c = c & 1 ? 3988292384 ^ c >>> 1 : c >>> 1;
+    return c >>> 0;
+  }), crc = (buf) => {
+    let c = 4294967295;
+    for (let byte of buf)
+      c = crcTable[(c ^ byte) & 255] ^ c >>> 8;
+    return (c ^ 4294967295) >>> 0;
+  }, chunk = (type, data) => {
+    let len = Buffer.alloc(4);
+    len.writeUInt32BE(data.length);
+    let td = Buffer.concat([Buffer.from(type), data]), c = Buffer.alloc(4);
+    return c.writeUInt32BE(crc(td)), Buffer.concat([len, td, c]);
+  }, ihdr = Buffer.alloc(13);
+  return ihdr.writeUInt32BE(size, 0), ihdr.writeUInt32BE(size, 4), ihdr.set([8, 2, 0, 0, 0], 8), Buffer.concat([Buffer.from([137, 80, 78, 71, 13, 10, 26, 10]), chunk("IHDR", ihdr), chunk("IDAT", deflateSync(raw)), chunk("IEND", Buffer.alloc(0))]);
+}
+var DENSITIES = [["mdpi", 108], ["hdpi", 162], ["xhdpi", 216], ["xxhdpi", 324], ["xxxhdpi", 432]];
+async function resizePng(src, outs) {
+  let file = `${WORK}/tools/Resize.java`;
+  mkdirSync3(`${WORK}/tools`, { recursive: !0 }), writeFileSync2(file, `import java.awt.*; import java.awt.image.*; import javax.imageio.ImageIO; import java.io.File;
+public class Resize { public static void main(String[] a) throws Exception {
+  BufferedImage in = ImageIO.read(new File(a[0]));
+  for (int i = 1; i + 1 < a.length; i += 2) {
+    int s = Integer.parseInt(a[i + 1]);
+    Image sc = in.getScaledInstance(s, s, Image.SCALE_AREA_AVERAGING);
+    BufferedImage out = new BufferedImage(s, s, BufferedImage.TYPE_INT_ARGB);
+    Graphics2D g = out.createGraphics(); g.drawImage(sc, 0, 0, null); g.dispose();
+    ImageIO.write(out, "png", new File(a[i]));
+  } } }`), await run("java", ["-Djava.awt.headless=true", file, src, ...outs], { quiet: !0 });
+}
+async function brandWithPatches(app, index, selected) {
+  let c = app.customize || {}, done = { via: [] };
+  if (!index || app.tool !== "morphe" && app.tool !== "revanced")
+    return done;
+  let prefix = app.tool, select = (name) => {
+    let s = selected.find((x) => x.name === name);
+    if (!s)
+      selected.push(s = { name, options: {} });
+    if (!done.via.includes(name))
+      done.via.push(name);
+    return s;
+  }, brand = findPatch(index, "Custom branding", app.packageName), opts = brand?.options || [], nameKey = opts.find((o) => /name/i.test(o.key))?.key, iconKey = opts.find((o) => /custom ?icon/i.test(o.key))?.key, fg = c.icon?.path?.replace(/\.png$/, "-fg.png"), canIcon = Boolean(c.icon && iconKey && fg && existsSync4(fg)), chosen = selected.some((x) => x.name === "Custom branding"), appIconKey = opts.find((o) => /^appIcon$/i.test(o.key))?.key;
+  if (brand && (chosen || canIcon || c.name && nameKey && appIconKey)) {
+    if (!chosen && !canIcon && appIconKey)
+      select("Custom branding").options[appIconKey] = "original";
+    if (c.name && nameKey)
+      select("Custom branding").options[nameKey] = c.name, done.name = !0;
+    if (canIcon) {
+      let dir = `${WORK}/branding`;
+      rmSync(dir, { recursive: !0, force: !0 });
+      let bg = readJson(c.icon.path.replace(/\.png$/, ".json"), {}).background || "#FFFFFF", jobs = [];
+      for (let [d, px] of DENSITIES)
+        mkdirSync3(`${dir}/mipmap-${d}`, { recursive: !0 }), jobs.push(`${dir}/mipmap-${d}/${prefix}_adaptive_foreground_custom.png`, String(px)), writeFileSync2(`${dir}/mipmap-${d}/${prefix}_adaptive_background_custom.png`, solidPng(px, bg));
+      await resizePng(fg, jobs);
+      let s = select("Custom branding");
+      if (s.options[iconKey] = resolve(dir), appIconKey)
+        s.options[appIconKey] = "custom";
+      done.icon = !0;
+    }
+  }
+  let pkgPatch = c.packageName && c.packageName !== app.packageName ? findPatch(index, "Change package name", app.packageName) : null, pkgKey = pkgPatch?.options?.find((o) => /package/i.test(o.key))?.key;
+  if (pkgPatch && pkgKey) {
+    let s = select("Change package name");
+    s.options[pkgKey] = c.packageName;
+    for (let o of pkgPatch.options || [])
+      if (/providers|permissions/i.test(o.key) && s.options[o.key] === void 0)
+        s.options[o.key] = !0;
+    done.packageName = !0;
+  }
+  if (done.name || done.icon || done.packageName) {
+    let what = [done.name && "name", done.icon && "icon", done.packageName && "package name"].filter(Boolean).join(", ");
+    info(`Applying your ${what} with ${done.via.join(" + ")} (no apktool round trip needed)`);
+  }
+  return done;
+}
 async function patch(appId) {
   let cfg = loadConfig(), app = getApp(cfg, appId), p = loadPlan(), input = `${WORK}/current.apk`, out = `${WORK}/patched.apk`;
   if (app.tool === "none")
@@ -1173,14 +1255,16 @@ async function patch(appId) {
     for (let b of bundles)
       args.push("-p", b, ...app.tool === "revanced" ? ["-b"] : []);
     args.push("--exclusive");
-    for (let sel of app.patches) {
+    let selected = app.patches.map((x) => ({ name: x.name, options: { ...x.options || {} } })), handled = await brandWithPatches(app, await loadIndex(ps), selected);
+    for (let sel of selected) {
       args.push("-e", sel.name);
-      for (let [k, v] of Object.entries(sel.options || {})) {
-        if (v === void 0 || v === "")
+      for (let [k, v] of Object.entries(sel.options)) {
+        if (v === void 0 || v === "" || v === null)
           continue;
         args.push(`-O${k}=${optionArg(v)}`);
       }
     }
+    writeJson(`${WORK}/branding.json`, handled);
     for (let c of custom)
       for (let n of c.patchNames?.length ? c.patchNames : [c.name])
         args.push("-e", n);
@@ -1223,10 +1307,27 @@ function rewriteManifest(xml, opts) {
   }
   return m;
 }
+function invalidQualifierDirs(resDir) {
+  if (!existsSync4(resDir))
+    return [];
+  return readdirSync2(resDir).filter((d) => d.split("-").slice(1).some((q) => /^(mcc|mnc)\d{4,}$/.test(q)));
+}
+function dropConfigs(resDir, dirs) {
+  if (!dirs.length)
+    return;
+  for (let d of dirs)
+    rmSync(join2(resDir, d), { recursive: !0, force: !0 });
+  warn(`Dropped ${dirs.length} resource folder${dirs.length === 1 ? "" : "s"} for configurations no device can have (${dirs.slice(0, 4).join(", ")}${dirs.length > 4 ? ", …" : ""})`);
+}
 async function customize(appId) {
-  let cfg = loadConfig(), app = getApp(cfg, appId), c = app.customize || {};
-  if (!c.name && !c.packageName && !c.icon)
+  let cfg = loadConfig(), app = getApp(cfg, appId), handled = readJson(`${WORK}/branding.json`, {}), all = app.customize || {}, c = { name: handled.name ? void 0 : all.name, packageName: handled.packageName ? void 0 : all.packageName, icon: handled.icon ? void 0 : all.icon };
+  if (!c.name && !c.packageName && !c.icon) {
+    if (handled.via?.length)
+      return ok(`Name, icon and package were already applied by ${handled.via.join(" + ")} — nothing left to decompile`);
     return log("No basic modifications — skipping");
+  }
+  if (handled.via?.length)
+    info(`${handled.via.join(" + ")} took care of part of it; decompiling for the rest`);
   let apktool = await fetchCli("apktool"), dec = `${WORK}/decoded`;
   rmSync(dec, { recursive: !0, force: !0 }), info("Decompiling resources (code stays untouched)"), await run("java", ["-jar", apktool, "d", "-f", "-s", "-o", dec, `${WORK}/current.apk`]);
   let meta = readJson(`${WORK}/input.json`, { packageName: app.packageName }), manifestPath = join2(dec, "AndroidManifest.xml"), xml = readFileSync3(manifestPath, "utf8"), curPkg = xml.match(/<manifest\b[^>]*package="([^"]+)"/)?.[1] || meta.packageName, resDir = join2(dec, "res");
@@ -1271,7 +1372,16 @@ async function customize(appId) {
     ok(`Renamed the app to "${c.name}"`);
   if (c.packageName && c.packageName !== curPkg)
     ok(`Package name ${curPkg} → ${c.packageName}`);
-  info("Rebuilding APK"), await run("java", ["-jar", apktool, "b", "-o", `${WORK}/customized.apk`, dec]), copyFileSync(`${WORK}/customized.apk`, `${WORK}/current.apk`), ok("Customized APK ready");
+  info("Rebuilding APK"), dropConfigs(resDir, invalidQualifierDirs(resDir));
+  try {
+    await run("java", ["-jar", apktool, "b", "-o", `${WORK}/customized.apk`, dec]);
+  } catch (e) {
+    let bad = [...new Set([...String(e.output || "").matchAll(/res\/([^/\s]+)\/[^:\s]+: error: invalid configuration/g)].map((m) => m[1]))];
+    if (!bad.length)
+      throw e;
+    dropConfigs(resDir, bad), info("Rebuilding APK again"), await run("java", ["-jar", apktool, "b", "-o", `${WORK}/customized.apk`, dec]);
+  }
+  copyFileSync(`${WORK}/customized.apk`, `${WORK}/current.apk`), ok("Customized APK ready");
 }
 async function sign(appId) {
   let bt = buildTools(), alias = loadConfig().settings.signing?.alias || env.RELEVANCE_KEY_ALIAS || "relevance", ks = `${WORK}/keystore.p12`;
@@ -1491,6 +1601,17 @@ async function checkUpdates(only) {
     }), ok(`Queued a build for ${id}`);
   if (!toBuild.length)
     ok("Everything is up to date");
+}
+
+// shared/companions.ts
+function companionIcon(app) {
+  if (app.packageName !== "app.revanced.android.gms")
+    return;
+  if (/MorpheApp\/MicroG-RE/i.test(app.source.url))
+    return "https://raw.githubusercontent.com/MorpheApp/MicroG-RE/main/play-services-core/src/main/res/mipmap-xxxhdpi/ic_app.png";
+  if (/ReVanced\/GmsCore/i.test(app.source.url))
+    return "https://raw.githubusercontent.com/ReVanced/GmsCore/main/play-services-core/src/main/res/mipmap-xxxhdpi/ic_app.png";
+  return;
 }
 
 // engine/site.ts
@@ -2687,7 +2808,7 @@ async function buildSite() {
 `);
     writeFileSync4(`${fd}/metadata/${pkg}.yml`, yml);
     let loc = `${fd}/metadata/${pkg}/en-US`;
-    mkdirSync5(`${loc}/phoneScreenshots`, { recursive: !0 }), await assetTo(app.customize?.icon?.path || app.iconUrl, `${loc}/icon.png`);
+    mkdirSync5(`${loc}/phoneScreenshots`, { recursive: !0 }), await assetTo(app.customize?.icon?.path || app.iconUrl || companionIcon(app), `${loc}/icon.png`);
     let i = 1;
     for (let s of app.listing?.screenshots || [])
       await assetTo(s, `${loc}/phoneScreenshots/${i++}.png`);
@@ -2727,7 +2848,7 @@ async function buildSite() {
   for (let { app, st } of apps) {
     let dir = `${OUT}/apps/${app.id}`;
     mkdirSync5(`${dir}/shots`, { recursive: !0 });
-    let icon = await assetTo(app.customize?.icon?.path || app.iconUrl, `${dir}/icon.png`) ? "icon.png" : "../../assets/icon.png", shots = [], i = 1;
+    let icon = await assetTo(app.customize?.icon?.path || app.iconUrl || companionIcon(app), `${dir}/icon.png`) ? "icon.png" : "../../assets/icon.png", shots = [], i = 1;
     for (let s of app.listing?.screenshots || []) {
       let bare = s.replace(/[?#].*$/, ""), ext = /\.(jpe?g)$/i.test(bare) ? "jpg" : /\.webp$/i.test(bare) ? "webp" : "png";
       if (await assetTo(s, `${dir}/shots/${i}.${ext}`))
